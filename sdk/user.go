@@ -10,6 +10,7 @@ package sdk
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -487,4 +488,40 @@ func (rc *RongCloud) TagGet(userIds []string) (TagResult, error) {
 	}
 	return tag, nil
 
+}
+
+// UserChatFbSet 设置用户禁言
+/*
+*@param  userID:用户 ID，最大长度 64 字节.是用户在 App 中的唯一标识码，必须保证在同一个 App 内不重复，重复的用户 Id 将被当作是同一用户。
+*@param  state:禁言状态，0 解除禁言、1 添加禁言。
+*@param  type:会话类型，目前支持单聊会话 PERSON
+*
+*@return CodeResult, error
+ */
+func (rc *RongCloud) UserChatFbSet(userID string, state int, t string) (CodeResult, error) {
+	if userID == "" {
+		return CodeResult{}, RCErrorNew(1002, "Paramer 'userID' is required")
+	}
+	if userID == "" {
+		return CodeResult{}, RCErrorNew(1002, "Paramer 'name' is required")
+	}
+
+	req := httplib.Post(rc.rongCloudURI + "/user/chat/fb/set." + ReqType)
+	req.SetTimeout(time.Second*rc.timeout, time.Second*rc.timeout)
+	rc.fillHeader(req)
+	req.Param("userId", userID)
+	req.Param("state", fmt.Sprintf("%d", state))
+	req.Param("type", t)
+
+	resp, err := rc.do(req)
+	if err != nil {
+		rc.urlError(err)
+		return CodeResult{}, err
+	}
+
+	var userResult CodeResult
+	if err := json.Unmarshal(resp, &userResult); err != nil {
+		return CodeResult{}, err
+	}
+	return userResult, nil
 }

@@ -1023,4 +1023,70 @@ func (rc *RongCloud) UGNotDisturbGet(groupId, busChannel string) (*UGNotDisturbG
 	}, nil
 }
 
+// UGGroupUserBannedAdd 设置用户禁言
+/*
+*@param  groupId:超级群 ID。
+*@param  userIds:用户 ID 列表，每次最多不超过 20 个用户，以逗号分隔。
+*
+*@return CodeResult, error
+ */
+func (rc *RongCloud) UGGroupUserBannedAdd(groupId string, userIds string) (CodeResult, error) {
+	if groupId == "" {
+		return CodeResult{}, RCErrorNew(1002, "Paramer 'userID' is required")
+	}
+	if groupId == "" {
+		return CodeResult{}, RCErrorNew(1002, "Paramer 'name' is required")
+	}
 
+	req := httplib.Post(rc.rongCloudURI + "/ultragroup/userbanned/add." + ReqType)
+	req.SetTimeout(time.Second*rc.timeout, time.Second*rc.timeout)
+	rc.fillHeader(req)
+	req.Param("groupId", groupId)
+	req.Param("userIds", userIds)
+
+	resp, err := rc.do(req)
+	if err != nil {
+		rc.urlError(err)
+		return CodeResult{}, err
+	}
+
+	var userResult CodeResult
+	if err := json.Unmarshal(resp, &userResult); err != nil {
+		return CodeResult{}, err
+	}
+	return userResult, nil
+}
+
+// UGGroupUserBannedDel 移除禁言成员
+/*
+*@param  groupId:超级群 ID。
+*@param  userIds:用户 ID 列表，每次最多不超过 20 个用户，以逗号分隔。
+*
+*@return CodeResult, error
+ */
+func (rc *RongCloud) UGGroupUserBannedDel(groupId string, userIds string) (CodeResult, error) {
+	if groupId == "" {
+		return CodeResult{}, RCErrorNew(1002, "Paramer 'userID' is required")
+	}
+	if groupId == "" {
+		return CodeResult{}, RCErrorNew(1002, "Paramer 'name' is required")
+	}
+
+	req := httplib.Post(rc.rongCloudURI + "/ultragroup/userbanned/del." + ReqType)
+	req.SetTimeout(time.Second*rc.timeout, time.Second*rc.timeout)
+	rc.fillHeader(req)
+	req.Param("groupId", groupId)
+	req.Param("userIds", userIds)
+
+	resp, err := rc.do(req)
+	if err != nil {
+		rc.urlError(err)
+		return CodeResult{}, err
+	}
+
+	var userResult CodeResult
+	if err := json.Unmarshal(resp, &userResult); err != nil {
+		return CodeResult{}, err
+	}
+	return userResult, nil
+}
