@@ -1035,7 +1035,9 @@ func (rc *RongCloud) ChatRoomEntryQuery(chatRoomID, keys string) ([]ChatRoomAttr
 	rc.fillHeader(req)
 
 	req.Param("chatroomId", chatRoomID)
-	req.Param("keys", keys)
+	if len(keys) > 0 {
+		req.Param("keys", keys)
+	}
 
 	resp, err := rc.do(req)
 	if err != nil {
