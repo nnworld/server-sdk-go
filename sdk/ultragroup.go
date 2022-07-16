@@ -1030,7 +1030,7 @@ func (rc *RongCloud) UGNotDisturbGet(groupId, busChannel string) (*UGNotDisturbG
 *
 *@return CodeResult, error
  */
-func (rc *RongCloud) UGGroupUserBannedAdd(groupId string, userIds string) (CodeResult, error) {
+func (rc *RongCloud) UGGroupUserBannedAdd(groupId, busChannel string, userIds string) (CodeResult, error) {
 	if groupId == "" {
 		return CodeResult{}, RCErrorNew(1002, "Paramer 'userID' is required")
 	}
@@ -1043,6 +1043,9 @@ func (rc *RongCloud) UGGroupUserBannedAdd(groupId string, userIds string) (CodeR
 	rc.fillHeader(req)
 	req.Param("groupId", groupId)
 	req.Param("userIds", userIds)
+	if busChannel != "" {
+		req.Param("busChannel", busChannel)
+	}
 
 	resp, err := rc.do(req)
 	if err != nil {
@@ -1064,7 +1067,7 @@ func (rc *RongCloud) UGGroupUserBannedAdd(groupId string, userIds string) (CodeR
 *
 *@return CodeResult, error
  */
-func (rc *RongCloud) UGGroupUserBannedDel(groupId string, userIds string) (CodeResult, error) {
+func (rc *RongCloud) UGGroupUserBannedDel(groupId, busChannel string, userIds string) (CodeResult, error) {
 	if groupId == "" {
 		return CodeResult{}, RCErrorNew(1002, "Paramer 'userID' is required")
 	}
@@ -1077,6 +1080,9 @@ func (rc *RongCloud) UGGroupUserBannedDel(groupId string, userIds string) (CodeR
 	rc.fillHeader(req)
 	req.Param("groupId", groupId)
 	req.Param("userIds", userIds)
+	if busChannel != "" {
+		req.Param("busChannel", busChannel)
+	}
 
 	resp, err := rc.do(req)
 	if err != nil {
